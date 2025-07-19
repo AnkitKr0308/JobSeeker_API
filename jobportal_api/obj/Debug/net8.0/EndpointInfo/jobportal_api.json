@@ -1,0 +1,147 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "jobportal_api",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/Roles/roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Users/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Users"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Users"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Users"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginDTO": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Users": {
+        "required": [
+          "email",
+          "gender",
+          "name",
+          "password",
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "role": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "contact": {
+            "type": "string",
+            "format": "tel",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

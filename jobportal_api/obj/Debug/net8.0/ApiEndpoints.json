@@ -1,0 +1,44 @@
+[
+  {
+    "ContainingType": "jobportal_api.Controllers.RolesController",
+    "Method": "GetRoles",
+    "RelativePath": "api/Roles/roles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "LoginUser",
+    "RelativePath": "api/Users/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "login",
+        "Type": "jobportal_api.DTO.LoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "SignUpUser",
+    "RelativePath": "api/Users/signup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "jobportal_api.Models.Users",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

@@ -1,0 +1,164 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Ankit\\.Net\\jobportal_api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\dto\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\dto\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\controllers\\rolescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\controllers\\rolescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|d:\\ankit\\.net\\jobportal_api\\jobportal_api\\models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93191E51-2FDC-4987-AE00-12C0F003A7F0}|jobportal_api\\jobportal_api.csproj|solutionrelative:jobportal_api\\models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LoginDTO.cs",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\DTO\\LoginDTO.cs",
+              "RelativeDocumentMoniker": "jobportal_api\\DTO\\LoginDTO.cs",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\DTO\\LoginDTO.cs",
+              "RelativeToolTip": "jobportal_api\\DTO\\LoginDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T12:27:57.622Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RolesController.cs",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Controllers\\RolesController.cs",
+              "RelativeDocumentMoniker": "jobportal_api\\Controllers\\RolesController.cs",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Controllers\\RolesController.cs",
+              "RelativeToolTip": "jobportal_api\\Controllers\\RolesController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAoAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T07:18:16.501Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Roles.cs",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Models\\Roles.cs",
+              "RelativeDocumentMoniker": "jobportal_api\\Models\\Roles.cs",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Models\\Roles.cs",
+              "RelativeToolTip": "jobportal_api\\Models\\Roles.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T07:17:17.045Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Program.cs",
+              "RelativeDocumentMoniker": "jobportal_api\\Program.cs",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Program.cs",
+              "RelativeToolTip": "jobportal_api\\Program.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACwAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T04:38:41.022Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\appsettings.json",
+              "RelativeDocumentMoniker": "jobportal_api\\appsettings.json",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\appsettings.json",
+              "RelativeToolTip": "jobportal_api\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAB/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-07-19T04:36:58.212Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "jobportal_api\\Controllers\\UsersController.cs",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "jobportal_api\\Controllers\\UsersController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAswCcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-17T16:28:03.511Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Users.cs",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Models\\Users.cs",
+              "RelativeDocumentMoniker": "jobportal_api\\Models\\Users.cs",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\Models\\Users.cs",
+              "RelativeToolTip": "jobportal_api\\Models\\Users.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAzwBUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-17T16:25:54.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "jobportal_api\\AppDbContext.cs",
+              "ToolTip": "D:\\Ankit\\.Net\\jobportal_api\\jobportal_api\\AppDbContext.cs",
+              "RelativeToolTip": "jobportal_api\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-17T16:21:35.679Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
