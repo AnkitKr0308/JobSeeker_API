@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "CreateJobs",
+    "RelativePath": "api/Jobs/createjob",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jobdto",
+        "Type": "jobportal_api.DTO.JobCreateDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "jobportal_api.Controllers.RolesController",
     "Method": "GetRoles",
     "RelativePath": "api/Roles/roles",
