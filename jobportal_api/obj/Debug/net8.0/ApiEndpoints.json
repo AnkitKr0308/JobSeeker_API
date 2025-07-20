@@ -16,6 +16,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "FindJobs",
+    "RelativePath": "api/Jobs/jobs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "query",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "jobportal_api.Controllers.RolesController",
     "Method": "GetRoles",
     "RelativePath": "api/Roles/roles",
@@ -51,7 +67,7 @@
     "Parameters": [
       {
         "Name": "user",
-        "Type": "jobportal_api.Models.Users",
+        "Type": "jobportal_api.DTO.UserCreateDTO",
         "IsRequired": true
       }
     ],

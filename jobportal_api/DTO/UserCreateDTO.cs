@@ -1,14 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace jobportal_api.Models
+namespace jobportal_api.DTO
 {
-    public class Users
+    public class UserCreateDTO
     {
-        [Key]
-        public int Id { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public string UserId { get; set; } 
+     
         [Required]
         public string Name { get; set; }
         [Required]
@@ -16,12 +12,11 @@ namespace jobportal_api.Models
         [Required]
         public string Password { get; set; }
         [Required]
-        public string Role { get; set; } 
+        public string Role { get; set; }
         public DateTime CreatedAt { get; set; }
         [Required]
         public string Gender { get; set; }
         [Phone]
         public string Contact { get; set; }
-
     }
 }

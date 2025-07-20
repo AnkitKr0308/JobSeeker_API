@@ -43,11 +43,11 @@ namespace jobportal_api.Controllers
                 return Unauthorized(new {success=false, message = "Invalid password" });
             }
 
-            return Ok(new { success = true, user });
+            return Ok(new { success = true, user.UserId, user.Name });
         }
 
         [HttpPost("signup")]
-        public async Task<ActionResult> SignUpUser([FromBody]Users user)
+        public async Task<ActionResult> SignUpUser([FromBody]UserCreateDTO user)
         {
             if (user == null) {
             return NotFound("User data is null");
@@ -84,7 +84,7 @@ namespace jobportal_api.Controllers
             _context.Users.Add(userData);
             await _context.SaveChangesAsync();
 
-            return Ok(new { success = true, userData });
+            return Ok(new { success = true, message = userData.UserId + " Created Successfully"  });
 
         }
     }
