@@ -72,5 +72,42 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "UpdatePassword",
+    "RelativePath": "api/Users/updatepassword/{email}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "logindto",
+        "Type": "jobportal_api.DTO.LoginDTO",
+        "IsRequired": true
+      },
+      {
+        "Name": "email",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "UserProfile",
+    "RelativePath": "api/Users/userprofile/{userid}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userid",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
