@@ -118,7 +118,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "logindto",
+        "Name": "dto",
         "Type": "jobportal_api.DTO.LoginDTO",
         "IsRequired": true
       },
