@@ -17,6 +17,22 @@
   },
   {
     "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "FindJobsByJobId",
+    "RelativePath": "api/Jobs/jobdetails/{jobid}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jobid",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
     "Method": "FindJobs",
     "RelativePath": "api/Jobs/jobs",
     "HttpMethod": "GET",
@@ -55,6 +71,26 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "Logout",
+    "RelativePath": "api/Users/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "CheckSession",
+    "RelativePath": "api/Users/session",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

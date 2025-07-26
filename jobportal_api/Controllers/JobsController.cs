@@ -19,44 +19,113 @@ namespace jobportal_api.Controllers
         }
 
         [HttpPost("createjob")]
+        
         public async Task<ActionResult> CreateJobs([FromBody] JobCreateDTO jobdto)
         {
-            var jobdetails = new Jobs
+            try
             {
-                Title = jobdto.Title,
-                Description = jobdto.Description,
-                SkillsRequired = jobdto.SkillsRequired,
-                Qualifications = jobdto.Qualifications,
-            };
+                var userId = HttpContext.Session.GetString("userId");
 
-            _context.Jobs.Add(jobdetails);
-            var result = await _context.SaveChangesAsync();
+                if (userId == null)
+                {
+                    return Unauthorized(new { success = false, message = "User not authorised" });
+                }
 
+                var jobdetails = new Jobs
+                {
+                    Title = jobdto.Title,
+                    Description = jobdto.Description,
+                    SkillsRequired = jobdto.SkillsRequired,
+                    Qualifications = jobdto.Qualifications,
+                    Role = jobdto.Role,
+                    Locations = jobdto.Locations,
+                    Type = jobdto.Type,
+                    Experience = jobdto.Experience,
+                    CreatedBy = userId
+                };
 
-            if (result==0)
+                _context.Jobs.Add(jobdetails);
+                var result = await _context.SaveChangesAsync();
+
+                if (result == 0)
+                {
+                    return BadRequest(new { success = false, message = "Error posting job" });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = $"Job {jobdetails.JobId} posted successfully",
+                    jobdetails.JobId,
+                    jobdetails.Title,
+                    jobdetails.Role
+                });
+            }
+            catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = "Error posting job"  });
+                var inner = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Internal server error",
+                    error = inner
+                });
             }
 
-            return Ok(new { success=true, message ="Job "+  jobdetails.JobId+ " posted successfully", jobdetails.JobId, jobdetails.Title });
         }
+
+
         [HttpGet("jobs")]
-        public async Task<ActionResult> FindJobs(string query="")
+        public async Task<ActionResult> FindJobs([FromQuery] string query ="")
         {
-            
-            if (query=="")
+            try
             {
-                 var data = await _context.Jobs.ToListAsync();
-                return Ok(data);
+
+                if (string.IsNullOrWhiteSpace(query))
+
+                {
+                    var data = await _context.Jobs.ToListAsync();
+                    return Ok(data);
+                }
+                else
+                {
+                    var param = new SqlParameter("@queryParam", query);
+                    var data = await _context.Jobs.FromSqlRaw("EXEC sp_queryJobs @queryParam", param).ToListAsync();
+                    return Ok(data);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new { success = false, message = "Internal server error", error = ex.Message });
+            }
+
+
+        }
+
+        [HttpGet("jobdetails/{jobid}")]
+        public async Task<ActionResult> FindJobsByJobId([FromRoute] string jobid)
+        {
+            var jobexists = await _context.Jobs.FirstOrDefaultAsync(j=>j.JobId == jobid);
+
+            if (jobexists == null)
+            {
+                return NotFound(new {success=false, message=jobid + " doesn't exists in database"});
             }
             else
             {
-                var param = new SqlParameter("@queryParam", query);
-                var data = await _context.Jobs.FromSqlRaw("EXEC sp_queryJobs @queryParam", param).ToListAsync();
-                return Ok(data);
-            }
+                var jobs = await _context.Jobs.Where(j=>j.JobId == jobid).ToListAsync();
 
-           
+                if (jobs != null)
+                {
+                    return Ok(new {success=true, message= "Details fetched successfully for job "+jobid, jobs});
+                }
+                else
+                {
+                    return BadRequest(new {success=false, message = "Unable to get job details"});
+                }
+            }
         }
+        
     }
 }

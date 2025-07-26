@@ -18,12 +18,26 @@ namespace jobportal_api.Controllers
         {
             _context = context;
         }
-        //[HttpGet("users")]
-        //public async Task<ActionResult> GetUsers()
-        //{
-        //    var users = await _context.Users.ToListAsync();
-        //    return Ok(users);
-        //}
+
+        [HttpGet("session")]
+        public IActionResult CheckSession()
+        {
+            var userId = HttpContext.Session.GetString("userId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { success = false });
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
+            if (user == null)
+            {
+                return Unauthorized(new { success = false });
+            }
+
+            return Ok(new { success = true, userId = user.UserId, user.Name, user.Role });
+        }
+
 
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser([FromBody] LoginDTO login)
@@ -44,7 +58,12 @@ namespace jobportal_api.Controllers
                 return Unauthorized(new { success = false, message = "Invalid password" });
             }
 
+            HttpContext.Session.SetString("userId", user.UserId);
+            Console.WriteLine("User ID from session: " + user.UserId);
+
             return Ok(new { success = true, user.UserId, user.Name, user.Role });
+
+            
         }
 
         [HttpPost("signup")]
@@ -131,5 +150,13 @@ namespace jobportal_api.Controllers
             }
 
         }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { success = true });
+        }
+
     }
 }
