@@ -1,6 +1,22 @@
 [
   {
     "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "ApplyJob",
+    "RelativePath": "api/Jobs/applyjob",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "appliedjob",
+        "Type": "jobportal_api.Models.AppliedJobs",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
     "Method": "CreateJobs",
     "RelativePath": "api/Jobs/createjob",
     "HttpMethod": "POST",

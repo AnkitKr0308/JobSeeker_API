@@ -80,6 +80,37 @@
         }
       }
     },
+    "/api/Jobs/applyjob": {
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppliedJobs"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppliedJobs"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppliedJobs"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Roles/roles": {
       "get": {
         "tags": [
@@ -244,6 +275,40 @@
   },
   "components": {
     "schemas": {
+      "AppliedJobs": {
+        "required": [
+          "jobId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jobId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "userId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "noticePeriod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "readyToRelocate": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentLocation": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "JobCreateDTO": {
         "required": [
           "description",

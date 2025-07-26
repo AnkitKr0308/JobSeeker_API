@@ -13,8 +13,8 @@ namespace jobportal_api
 
         public DbSet<Users> Users { get; set; }
         public DbSet<Roles> Roles { get; set; }
-        
         public DbSet<Jobs> Jobs { get; set; }
+        public DbSet<AppliedJobs> AppliedJobs { get; set; }
 
     }
     

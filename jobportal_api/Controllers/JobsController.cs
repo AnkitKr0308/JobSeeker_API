@@ -19,7 +19,7 @@ namespace jobportal_api.Controllers
         }
 
         [HttpPost("createjob")]
-        
+
         public async Task<ActionResult> CreateJobs([FromBody] JobCreateDTO jobdto)
         {
             try
@@ -76,7 +76,7 @@ namespace jobportal_api.Controllers
 
 
         [HttpGet("jobs")]
-        public async Task<ActionResult> FindJobs([FromQuery] string query ="")
+        public async Task<ActionResult> FindJobs([FromQuery] string query = "")
         {
             try
             {
@@ -106,26 +106,65 @@ namespace jobportal_api.Controllers
         [HttpGet("jobdetails/{jobid}")]
         public async Task<ActionResult> FindJobsByJobId([FromRoute] string jobid)
         {
-            var jobexists = await _context.Jobs.FirstOrDefaultAsync(j=>j.JobId == jobid);
+            var jobexists = await _context.Jobs.FirstOrDefaultAsync(j => j.JobId == jobid);
 
             if (jobexists == null)
             {
-                return NotFound(new {success=false, message=jobid + " doesn't exists in database"});
+                return NotFound(new { success = false, message = jobid + " doesn't exists in database" });
             }
             else
             {
-                var jobs = await _context.Jobs.Where(j=>j.JobId == jobid).ToListAsync();
+                var jobs = await _context.Jobs.Where(j => j.JobId == jobid).ToListAsync();
 
                 if (jobs != null)
                 {
-                    return Ok(new {success=true, message= "Details fetched successfully for job "+jobid, jobs});
+                    return Ok(new { success = true, message = "Details fetched successfully for job " + jobid, jobs });
                 }
                 else
                 {
-                    return BadRequest(new {success=false, message = "Unable to get job details"});
+                    return BadRequest(new { success = false, message = "Unable to get job details" });
                 }
             }
         }
-        
+
+        [HttpPost("applyjob")]
+        public async Task<ActionResult> ApplyJob([FromBody] AppliedJobs appliedjob)
+        {
+            var userId = HttpContext.Session.GetString("userId");
+            try {
+
+                if (userId == null)
+                {
+                    return Unauthorized(new { success = false, message = "User not authorised" });
+                }
+
+
+                var apply = new AppliedJobs
+                {
+                    JobId = appliedjob.JobId,
+                    UserId = userId,
+                    NoticePeriod = appliedjob.NoticePeriod,
+                    ReadyToRelocate = appliedjob.ReadyToRelocate,
+                    CurrentLocation = appliedjob.CurrentLocation,
+                };
+
+                 _context.AppliedJobs.Add(apply);
+                var result = await _context.SaveChangesAsync();
+
+                if (result == 0)
+                {
+                    return BadRequest(new {success=false, message="Failed to apply for job"});
+                }
+
+                return Ok(new {success = true, message = "Applied Successfully", appliedjob});
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+
+        }
+
     }
 }

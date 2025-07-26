@@ -54,16 +54,16 @@ namespace jobportal_api.Controllers
         public async Task<IActionResult> SignUpUser([FromBody] UserCreateDTO user)
         {
             if (user == null)
-                return BadRequest("User data is null");
+                return BadRequest(new { success = false, message = "User data is null" });
 
             bool emailExists = await _context.Users
                 .AnyAsync(u => u.Email.ToLower() == user.Email.ToLower());
 
             if (emailExists)
-                return BadRequest(new { message = "User with this email already exists" });
+                return BadRequest(new { success = false, message = "User with this email already exists" });
 
             if (!user.Email.Contains("@"))
-                return BadRequest(new { message = "Please enter correct email address" });
+                return BadRequest(new { success = false, message = "Please enter correct email address" });
 
             var hashPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
@@ -81,8 +81,9 @@ namespace jobportal_api.Controllers
             _context.Users.Add(userData);
             await _context.SaveChangesAsync();
 
-            return Ok(new { userData.UserId, userData.Name, userData.Role });
+            return Ok(new { success = true, userId = userData.UserId, name = userData.Name, role = userData.Role });
         }
+
 
         [HttpGet("userprofile/{userid}")]
         public async Task<IActionResult> UserProfile(string userid)
