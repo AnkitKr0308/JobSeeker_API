@@ -26,7 +26,7 @@ builder.Services.AddDistributedSqlServerCache(options =>
 // Session middleware
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromDays(30); // Session timeout
+    options.IdleTimeout = TimeSpan.FromDays(15); // Session timeout
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;

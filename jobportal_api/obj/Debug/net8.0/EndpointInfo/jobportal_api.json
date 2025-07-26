@@ -41,16 +41,6 @@
         "tags": [
           "Jobs"
         ],
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -104,6 +94,18 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Jobs/jobsapplied": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
         "responses": {
           "200": {
             "description": "OK"

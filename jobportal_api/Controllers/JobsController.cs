@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace jobportal_api.Controllers
@@ -76,23 +77,12 @@ namespace jobportal_api.Controllers
 
 
         [HttpGet("jobs")]
-        public async Task<ActionResult> FindJobs([FromQuery] string query = "")
+        public async Task<ActionResult> FindJobs()
         {
             try
             {
-
-                if (string.IsNullOrWhiteSpace(query))
-
-                {
-                    var data = await _context.Jobs.ToListAsync();
+                var data = await _context.Jobs.ToListAsync();
                     return Ok(data);
-                }
-                else
-                {
-                    var param = new SqlParameter("@queryParam", query);
-                    var data = await _context.Jobs.FromSqlRaw("EXEC sp_queryJobs @queryParam", param).ToListAsync();
-                    return Ok(data);
-                }
             }
             catch (Exception ex)
             {
@@ -130,14 +120,23 @@ namespace jobportal_api.Controllers
         [HttpPost("applyjob")]
         public async Task<ActionResult> ApplyJob([FromBody] AppliedJobs appliedjob)
         {
+
             var userId = HttpContext.Session.GetString("userId");
             try {
+
+                var existingApplies = await _context.AppliedJobs
+                                 .Where(a => a.JobId == appliedjob.JobId && a.UserId == userId)
+                                 .ToListAsync();
+
+                if (existingApplies.Any())
+                {
+                    return BadRequest( new { success = false, message = "You have already applied for this job" });
+                }
 
                 if (userId == null)
                 {
                     return Unauthorized(new { success = false, message = "User not authorised" });
                 }
-
 
                 var apply = new AppliedJobs
                 {
@@ -164,6 +163,36 @@ namespace jobportal_api.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
 
+        }
+
+        [HttpGet("jobsapplied")]
+        public async Task<ActionResult> GetAppliedJobs()
+        {
+            try
+            {
+                var userId = HttpContext.Session.GetString("userId");
+
+                if (userId == null)
+                {
+                    return Unauthorized(new { success = false, message = "Unauthorized user" });
+                }
+
+                var userParam = new SqlParameter("@userIdParam", userId);
+                var appliedjobs = await _context.Jobs.FromSqlRaw("EXEC sp_getAppliedJobs @userIdParam", userParam).ToListAsync();
+
+                if (appliedjobs == null || appliedjobs.Count == 0)
+                {
+                    return NotFound(new { success = false, message = "You have not applied to any jobs yet" });
+                }
+               
+
+                return Ok(new { success = true, appliedjobs });
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
         }
 
     }

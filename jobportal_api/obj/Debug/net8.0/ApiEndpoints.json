@@ -54,13 +54,17 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "query",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "GetAppliedJobs",
+    "RelativePath": "api/Jobs/jobsapplied",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
