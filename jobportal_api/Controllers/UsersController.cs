@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using jobportal_api.DTO;
+using jobportal_api.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using jobportal_api.Models;
-using jobportal_api.DTO;
 
 namespace jobportal_api.Controllers
 {
@@ -84,28 +84,7 @@ namespace jobportal_api.Controllers
             return Ok(new { success = true, userId = userData.UserId, name = userData.Name, role = userData.Role });
         }
 
-
-        [HttpGet("userprofile/{userid}")]
-        public async Task<IActionResult> UserProfile(string userid)
-        {
-            var data = await _context.Users
-                .Where(u => u.UserId == userid)
-                .Select(u => new
-                {
-                    u.UserId,
-                    u.Contact,
-                    u.Role,
-                    u.Name,
-                    u.Email,
-                    u.Gender
-                })
-                .FirstOrDefaultAsync();
-
-            if (data == null)
-                return NotFound(new { message = $"{userid} not found" });
-
-            return Ok(data);
-        }
+      
 
         [HttpPut("updatepassword/{email}")]
         public async Task<IActionResult> UpdatePassword([FromBody] LoginDTO dto)
@@ -129,5 +108,227 @@ namespace jobportal_api.Controllers
             HttpContext.Session.Clear();
             return Ok();
         }
+
+
+        [HttpGet("userprofile/{userid}")]
+        public async Task<IActionResult> GetUserProfile(string userid)
+        {
+            var user = await _context.Users
+       .FirstOrDefaultAsync(u => u.UserId == userid);
+
+            if (user == null)
+                return NotFound(new { success = false, message = "User not found" });
+
+            // Get portfolio (single or null)
+            var portfolio = await _context.Portfolio
+                .FirstOrDefaultAsync(p => p.UserId == userid);
+
+            // Get projects list
+            var projects = await _context.Projects
+                .Where(p => p.UserId == userid)
+                .ToListAsync();
+
+            // Get work experiences list
+            var workExps = await _context.WorkEx
+                .Where(w => w.UserId == userid)
+                .ToListAsync();
+
+            var dto = new UserProfileDTO
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email,
+                Gender = user.Gender,
+                Contact = user.Contact,
+                Role = user.Role,
+                Bio=user.Bio,
+                Skills=user.Skills,
+                //Portfolio = portfolio == null ? null : new PortfolioDTO
+                //{
+                //    Bio = portfolio.Bio,
+                //    Skills = portfolio.Skills 
+                //},
+                Projects = projects.Select(p => new ProjectDTO
+                {
+                    ProjectID = p.ProjectID,
+                    Title = p.Title,
+                    Description = p.Description,
+                    Skills = p.Skills
+                }).ToList(),
+                WorkExperiences = workExps.Select(w => new WorkExDTO
+                {
+                    WorkExID = w.WorkExID,
+                    Company = w.Company,
+                    FromDate = w.FromDate,
+                    ToDate = w.ToDate
+                }).ToList()
+            };
+
+            return Ok(new { success = true, profiledata = dto });
+        }
+
+        [HttpGet("userprofile")]
+        public async Task<IActionResult> GetAllUserProfiles()
+        {
+            try
+            {
+
+                var users = await _context.Users
+                    .Select(user => new UserProfileDTO
+                    {
+                        UserId = user.UserId,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Gender = user.Gender,
+                        Contact = user.Contact,
+                        Role = user.Role,
+                        Bio=user.Bio,
+                        Skills=user.Skills,
+
+                        //Portfolio = _context.Portfolio
+                        //    .Where(p => p.UserId == user.UserId)
+                        //    .Select(p => new PortfolioDTO
+                        //    {
+                        //        Bio = p.Bio,
+                        //        Skills = p.Skills
+                        //    })
+                        //    .FirstOrDefault(),
+
+                        Projects = _context.Projects
+                            .Where(p => p.UserId == user.UserId)
+                            .Select(p => new ProjectDTO
+                            {
+                                ProjectID = p.ProjectID,
+                                Title = p.Title,
+                                Description = p.Description,
+                                Skills = p.Skills
+                            })
+                            .ToList(),
+
+                        WorkExperiences = _context.WorkEx
+                            .Where(w => w.UserId == user.UserId)
+                            .Select(w => new WorkExDTO
+                            {
+                                WorkExID = w.WorkExID,
+                                Company = w.Company,
+                                FromDate = w.FromDate,
+                                ToDate = w.ToDate
+                            })
+                            .ToList()
+                    })
+                    .ToListAsync();
+
+                if (users == null || users.Count == 0)
+                {
+                    return NotFound(new { success = false, message = "No users found" });
+                }
+
+                return Ok(new { success = true, data = users });
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+        }
+
+
+        [HttpPost("userprofile")]
+        public async Task<IActionResult> CreateUserProfile([FromBody] UserProfileDTO dto)
+        {
+            //if (dto.Portfolio == null)
+            //    return BadRequest(new { success = false, message = "Portfolio information is required." });
+
+            //var portfolio = new Portfolio
+            //{
+            //    UserId = dto.UserId,
+            //    Bio = dto.Portfolio.Bio,
+            //    Skills = dto.Portfolio.Skills
+            //};
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == dto.UserId);
+            if (user != null)
+            {
+                user.Contact = dto.Contact;
+                user.Gender = dto.Gender;
+                user.Name = dto.Name;
+                user.Email = dto.Email;
+                user.Bio = dto.Bio;
+                user.Skills = dto.Skills;
+                user.Role = dto.Role;
+            }
+
+            var projects = dto.Projects.Select(p => new Projects
+            {
+                UserId = dto.UserId,
+                Title = p.Title,
+                Description = p.Description,
+                Skills = p.Skills
+            }).ToList();
+
+            var workEx = dto.WorkExperiences.Select(w => new WorkEx
+            {
+                UserId = dto.UserId,
+                Company = w.Company,
+                FromDate = w.FromDate,
+                ToDate = w.ToDate
+            }).ToList();
+
+            //_context.Portfolio.Add(portfolio);
+            _context.Projects.AddRange(projects);
+            _context.WorkEx.AddRange(workEx);
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = "Profile created successfully" });
+        }
+
+
+        [HttpPut("userprofile/{userid}")]
+        public async Task<IActionResult> UpdateUserProfile(string userid, [FromBody] UserProfileDTO dto)
+        {
+            //var portfolio = await _context.Portfolio.FirstOrDefaultAsync(p => p.UserId == userid);
+            //if (portfolio != null)
+            //{
+            //    portfolio.Bio = dto.Portfolio.Bio;
+            //    portfolio.Skills = dto.Portfolio.Skills;
+            //}
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userid);
+            if (user != null)
+            {
+                user.Contact = dto.Contact;
+                user.Gender = dto.Gender;
+                user.Name = dto.Name;
+                user.Email = dto.Email;
+                user.Bio= dto.Bio;
+                user.Skills= dto.Skills;
+            }
+
+            var oldProjects = _context.Projects.Where(p => p.UserId == userid);
+            _context.Projects.RemoveRange(oldProjects);
+            _context.Projects.AddRange(dto.Projects.Select(p => new Projects
+            {
+                UserId = userid,
+                Title = p.Title,
+                Description = p.Description,
+                Skills = p.Skills
+            }));
+
+            var oldWorkEx = _context.WorkEx.Where(w => w.UserId == userid);
+            _context.WorkEx.RemoveRange(oldWorkEx);
+            _context.WorkEx.AddRange(dto.WorkExperiences.Select(w => new WorkEx
+            {
+                UserId = userid,
+                Company = w.Company,
+                FromDate = w.FromDate,
+                ToDate = w.ToDate
+            }));
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = "Profile updated successfully" });
+        }
+
+
     }
+
 }

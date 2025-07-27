@@ -145,6 +145,7 @@ namespace jobportal_api.Controllers
                     NoticePeriod = appliedjob.NoticePeriod,
                     ReadyToRelocate = appliedjob.ReadyToRelocate,
                     CurrentLocation = appliedjob.CurrentLocation,
+                    AppliedDate = DateOnly.FromDateTime(DateTime.Now),
                 };
 
                  _context.AppliedJobs.Add(apply);
@@ -193,6 +194,28 @@ namespace jobportal_api.Controllers
                 var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
+        }
+
+        [HttpGet("applications")]
+        public async Task<ActionResult> GetApplications()
+        {
+            try
+            {
+                var result = await _context.Applications.FromSqlRaw("EXEC sp_getApplications").ToListAsync();
+
+                if (result == null || result.Count == 0)
+                {
+                    return NotFound(new { success = false, message = "No Applications Found" });
+                }
+
+                return Ok(new { success = true, result });
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+
         }
 
     }

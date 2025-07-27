@@ -6,22 +6,20 @@ namespace jobportal_api.Models
     public class Users
     {
         [Key]
-        public int Id { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public string UserId { get; set; } 
-        [Required]
+        public int Id { get; set; }            // DB PK (int)
+
+        public string UserId { get; set; }    // Business user ID (string)
+
         public string Name { get; set; }
-        [Required]
         public string Email { get; set; }
-        [Required]
+        public string Role { get; set; }
         public string Password { get; set; }
-        [Required]
-        public string Role { get; set; } 
-        public DateTime CreatedAt { get; set; }
-        [Required]
         public string Gender { get; set; }
-        [Phone]
         public string Contact { get; set; }
+
+        public string? Bio {  get; set; }
+        public string? Skills { get; set; }
+        public DateTime CreatedAt { get; set; }
 
     }
 }

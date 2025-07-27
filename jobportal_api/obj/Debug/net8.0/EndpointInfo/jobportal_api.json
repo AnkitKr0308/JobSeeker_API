@@ -113,6 +113,18 @@
         }
       }
     },
+    "/api/Jobs/applications": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Roles/roles": {
       "get": {
         "tags": [
@@ -199,28 +211,6 @@
         }
       }
     },
-    "/api/Users/userprofile/{userid}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "parameters": [
-          {
-            "name": "userid",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Users/updatepassword/{email}": {
       "put": {
         "tags": [
@@ -273,6 +263,108 @@
           }
         }
       }
+    },
+    "/api/Users/userprofile/{userid}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Users/userprofile": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -286,7 +378,8 @@
         "properties": {
           "id": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "jobId": {
             "minLength": 1,
@@ -298,7 +391,8 @@
           },
           "noticePeriod": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "readyToRelocate": {
             "type": "string",
@@ -306,6 +400,15 @@
           },
           "currentLocation": {
             "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "appliedDate": {
+            "type": "string",
+            "format": "date",
             "nullable": true
           }
         },
@@ -369,6 +472,28 @@
         },
         "additionalProperties": false
       },
+      "ProjectDTO": {
+        "type": "object",
+        "properties": {
+          "projectID": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "skills": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UserCreateDTO": {
         "required": [
           "email",
@@ -406,6 +531,82 @@
           "contact": {
             "type": "string",
             "format": "tel",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserProfileDTO": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "contact": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "skills": {
+            "type": "string",
+            "nullable": true
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectDTO"
+            },
+            "nullable": true
+          },
+          "workExperiences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkExDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkExDTO": {
+        "type": "object",
+        "properties": {
+          "workExID": {
+            "type": "string",
+            "nullable": true
+          },
+          "company": {
+            "type": "string",
+            "nullable": true
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         },

@@ -1,6 +1,16 @@
 [
   {
     "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "GetApplications",
+    "RelativePath": "api/Jobs/applications",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
     "Method": "ApplyJob",
     "RelativePath": "api/Jobs/applyjob",
     "HttpMethod": "POST",
@@ -152,7 +162,33 @@
   },
   {
     "ContainingType": "jobportal_api.Controllers.UsersController",
-    "Method": "UserProfile",
+    "Method": "GetAllUserProfiles",
+    "RelativePath": "api/Users/userprofile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "CreateUserProfile",
+    "RelativePath": "api/Users/userprofile",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "jobportal_api.DTO.UserProfileDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "GetUserProfile",
     "RelativePath": "api/Users/userprofile/{userid}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -161,6 +197,27 @@
       {
         "Name": "userid",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "UpdateUserProfile",
+    "RelativePath": "api/Users/userprofile/{userid}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userid",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "jobportal_api.DTO.UserProfileDTO",
         "IsRequired": true
       }
     ],

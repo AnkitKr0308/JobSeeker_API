@@ -15,6 +15,12 @@ namespace jobportal_api
         public DbSet<Roles> Roles { get; set; }
         public DbSet<Jobs> Jobs { get; set; }
         public DbSet<AppliedJobs> AppliedJobs { get; set; }
+        public DbSet<ApplicationsDTO> Applications { get; set; }
+        //public DbSet<UserProfileDTO> UserProfiles { get; set; }
+
+        public DbSet<Portfolio> Portfolio { get; set; }      
+        public DbSet<Projects> Projects { get; set; }         
+        public DbSet<WorkEx> WorkEx { get; set; }
 
     }
     
