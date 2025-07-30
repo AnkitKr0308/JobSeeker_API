@@ -6,9 +6,9 @@ namespace jobportal_api.Models
     public class Users
     {
         [Key]
-        public int Id { get; set; }            // DB PK (int)
+        public int Id { get; set; }            
 
-        public string UserId { get; set; }    // Business user ID (string)
+        public string UserId { get; set; }    
 
         public string Name { get; set; }
         public string Email { get; set; }

@@ -166,6 +166,7 @@ namespace jobportal_api.Controllers
 
         }
 
+
         [HttpGet("jobsapplied")]
         public async Task<ActionResult> GetAppliedJobs()
         {
@@ -179,13 +180,13 @@ namespace jobportal_api.Controllers
                 }
 
                 var userParam = new SqlParameter("@userIdParam", userId);
-                var appliedjobs = await _context.Jobs.FromSqlRaw("EXEC sp_getAppliedJobs @userIdParam", userParam).ToListAsync();
+                var appliedjobs = await _context.AppliedJobsDTO.FromSqlRaw("EXEC sp_getAppliedJobs @userIdParam", userParam).ToListAsync();
 
                 if (appliedjobs == null || appliedjobs.Count == 0)
                 {
                     return NotFound(new { success = false, message = "You have not applied to any jobs yet" });
                 }
-               
+
 
                 return Ok(new { success = true, appliedjobs });
             }
@@ -195,6 +196,7 @@ namespace jobportal_api.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
         }
+
 
         [HttpGet("applications")]
         public async Task<ActionResult> GetApplications()

@@ -143,11 +143,7 @@ namespace jobportal_api.Controllers
                 Role = user.Role,
                 Bio=user.Bio,
                 Skills=user.Skills,
-                //Portfolio = portfolio == null ? null : new PortfolioDTO
-                //{
-                //    Bio = portfolio.Bio,
-                //    Skills = portfolio.Skills 
-                //},
+            
                 Projects = projects.Select(p => new ProjectDTO
                 {
                     ProjectID = p.ProjectID,
@@ -185,14 +181,6 @@ namespace jobportal_api.Controllers
                         Bio=user.Bio,
                         Skills=user.Skills,
 
-                        //Portfolio = _context.Portfolio
-                        //    .Where(p => p.UserId == user.UserId)
-                        //    .Select(p => new PortfolioDTO
-                        //    {
-                        //        Bio = p.Bio,
-                        //        Skills = p.Skills
-                        //    })
-                        //    .FirstOrDefault(),
 
                         Projects = _context.Projects
                             .Where(p => p.UserId == user.UserId)
@@ -236,15 +224,6 @@ namespace jobportal_api.Controllers
         [HttpPost("userprofile")]
         public async Task<IActionResult> CreateUserProfile([FromBody] UserProfileDTO dto)
         {
-            //if (dto.Portfolio == null)
-            //    return BadRequest(new { success = false, message = "Portfolio information is required." });
-
-            //var portfolio = new Portfolio
-            //{
-            //    UserId = dto.UserId,
-            //    Bio = dto.Portfolio.Bio,
-            //    Skills = dto.Portfolio.Skills
-            //};
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == dto.UserId);
             if (user != null)
@@ -286,12 +265,6 @@ namespace jobportal_api.Controllers
         [HttpPut("userprofile/{userid}")]
         public async Task<IActionResult> UpdateUserProfile(string userid, [FromBody] UserProfileDTO dto)
         {
-            //var portfolio = await _context.Portfolio.FirstOrDefaultAsync(p => p.UserId == userid);
-            //if (portfolio != null)
-            //{
-            //    portfolio.Bio = dto.Portfolio.Bio;
-            //    portfolio.Skills = dto.Portfolio.Skills;
-            //}
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userid);
             if (user != null)

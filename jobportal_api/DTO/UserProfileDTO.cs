@@ -13,16 +13,9 @@ namespace jobportal_api.DTO
         public string? Bio { get; set; }
         public string? Skills { get; set; }
 
-        //public PortfolioDTO? Portfolio { get; set; }
         public List<ProjectDTO> Projects { get; set; }
         public List<WorkExDTO> WorkExperiences { get; set; }
     }
-
-    //public class PortfolioDTO
-    //{
-    //    public string? Bio { get; set; }
-    //    public string? Skills { get; set; }
-    //}
 
     public class ProjectDTO
     {

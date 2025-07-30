@@ -9,7 +9,7 @@ namespace jobportal_api.Models
         public int Id { get; set; }
 
         public string WorkExID { get; set; }
-        public string UserId { get; set; }    // Link to Users.UserId (string)
+        public string UserId { get; set; }    
 
         public string Company { get; set; }
         public DateTime? FromDate { get; set; }

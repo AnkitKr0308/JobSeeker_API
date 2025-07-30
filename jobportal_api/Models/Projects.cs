@@ -9,7 +9,7 @@ namespace jobportal_api.Models
         public int Id { get; set; }
 
         public string ProjectID { get; set; }
-        public string UserId { get; set; }    // Link to Users.UserId (string)
+        public string UserId { get; set; }    
 
         public string Title { get; set; }
         public string Description { get; set; }
