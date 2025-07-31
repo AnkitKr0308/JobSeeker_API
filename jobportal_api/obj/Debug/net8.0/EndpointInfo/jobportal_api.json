@@ -101,6 +101,27 @@
         }
       }
     },
+    "/api/Jobs/CheckAppliedJobs": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "jobid",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Jobs/jobsapplied": {
       "get": {
         "tags": [
@@ -284,20 +305,22 @@
             "description": "OK"
           }
         }
-      },
-      "put": {
+      }
+    },
+    "/api/Users/userprofile": {
+      "get": {
         "tags": [
           "Users"
         ],
-        "parameters": [
-          {
-            "name": "userid",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+        "responses": {
+          "200": {
+            "description": "OK"
           }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
         ],
         "requestBody": {
           "content": {
@@ -323,20 +346,8 @@
             "description": "OK"
           }
         }
-      }
-    },
-    "/api/Users/userprofile": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       },
-      "post": {
+      "put": {
         "tags": [
           "Users"
         ],
@@ -601,12 +612,12 @@
           },
           "fromDate": {
             "type": "string",
-            "format": "date-time",
+            "format": "date",
             "nullable": true
           },
           "toDate": {
             "type": "string",
-            "format": "date-time",
+            "format": "date",
             "nullable": true
           }
         },

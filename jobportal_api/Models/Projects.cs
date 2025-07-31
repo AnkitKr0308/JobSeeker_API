@@ -7,7 +7,7 @@ namespace jobportal_api.Models
     {
         [Key]
         public int Id { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string ProjectID { get; set; }
         public string UserId { get; set; }    
 

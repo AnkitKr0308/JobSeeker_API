@@ -7,13 +7,13 @@ namespace jobportal_api.Models
     {
         [Key]
         public int Id { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string WorkExID { get; set; }
         public string UserId { get; set; }    
 
         public string Company { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
+        public DateOnly? FromDate { get; set; }
+        public DateOnly? ToDate { get; set; }
     }
 
 }

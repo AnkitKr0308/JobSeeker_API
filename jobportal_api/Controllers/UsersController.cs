@@ -253,7 +253,6 @@ namespace jobportal_api.Controllers
                 ToDate = w.ToDate
             }).ToList();
 
-            //_context.Portfolio.Add(portfolio);
             _context.Projects.AddRange(projects);
             _context.WorkEx.AddRange(workEx);
 
@@ -262,43 +261,63 @@ namespace jobportal_api.Controllers
         }
 
 
-        [HttpPut("userprofile/{userid}")]
-        public async Task<IActionResult> UpdateUserProfile(string userid, [FromBody] UserProfileDTO dto)
+        [HttpPut("userprofile")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UserProfileDTO dto)
         {
+            try {
+                var userid = HttpContext.Session.GetString("userId");
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userid);
-            if (user != null)
-            {
-                user.Contact = dto.Contact;
-                user.Gender = dto.Gender;
-                user.Name = dto.Name;
-                user.Email = dto.Email;
-                user.Bio= dto.Bio;
-                user.Skills= dto.Skills;
+                if (userid == null)
+                {
+                    return Unauthorized("Unauthorized user");
+                }
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userid);
+                if (user != null)
+                {
+                    user.Contact = dto.Contact;
+                    user.Gender = dto.Gender;
+                    user.Name = dto.Name;
+                    user.Email = dto.Email;
+                    user.Bio = dto.Bio;
+                    user.Skills = dto.Skills;
+                }
+
+                var oldProjects = _context.Projects.Where(p => p.UserId == userid);
+                _context.Projects.RemoveRange(oldProjects);
+                _context.Projects.AddRange(dto.Projects.Select(p => new Projects
+                {
+                    UserId = userid,
+                    Title = p.Title,
+                    Description = p.Description,
+                    Skills = p.Skills
+                }));
+
+                var oldWorkEx = _context.WorkEx.Where(w => w.UserId == userid);
+                _context.WorkEx.RemoveRange(oldWorkEx);
+                _context.WorkEx.AddRange(dto.WorkExperiences.Select(w => new WorkEx
+                {
+                    UserId = userid,
+                    Company = w.Company,
+                    FromDate = w.FromDate,
+                    ToDate = w.ToDate
+                }));
+
+                var result = await _context.SaveChangesAsync();
+
+                if (result == 0)
+                {
+                    return BadRequest(new { success = false, message = "Unable to update profile" });
+                }
+
+                return Ok(new { success = true, message = "Profile updated successfully" });
             }
-
-            var oldProjects = _context.Projects.Where(p => p.UserId == userid);
-            _context.Projects.RemoveRange(oldProjects);
-            _context.Projects.AddRange(dto.Projects.Select(p => new Projects
+            catch (Exception ex)
             {
-                UserId = userid,
-                Title = p.Title,
-                Description = p.Description,
-                Skills = p.Skills
-            }));
-
-            var oldWorkEx = _context.WorkEx.Where(w => w.UserId == userid);
-            _context.WorkEx.RemoveRange(oldWorkEx);
-            _context.WorkEx.AddRange(dto.WorkExperiences.Select(w => new WorkEx
-            {
-                UserId = userid,
-                Company = w.Company,
-                FromDate = w.FromDate,
-                ToDate = w.ToDate
-            }));
-
-            await _context.SaveChangesAsync();
-            return Ok(new { success = true, message = "Profile updated successfully" });
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+           
         }
 
 

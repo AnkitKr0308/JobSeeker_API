@@ -27,6 +27,22 @@
   },
   {
     "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "CheckAppliedJobs",
+    "RelativePath": "api/Jobs/CheckAppliedJobs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jobid",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
     "Method": "CreateJobs",
     "RelativePath": "api/Jobs/createjob",
     "HttpMethod": "POST",
@@ -188,6 +204,22 @@
   },
   {
     "ContainingType": "jobportal_api.Controllers.UsersController",
+    "Method": "UpdateUserProfile",
+    "RelativePath": "api/Users/userprofile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "jobportal_api.DTO.UserProfileDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.UsersController",
     "Method": "GetUserProfile",
     "RelativePath": "api/Users/userprofile/{userid}",
     "HttpMethod": "GET",
@@ -197,27 +229,6 @@
       {
         "Name": "userid",
         "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "jobportal_api.Controllers.UsersController",
-    "Method": "UpdateUserProfile",
-    "RelativePath": "api/Users/userprofile/{userid}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userid",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "dto",
-        "Type": "jobportal_api.DTO.UserProfileDTO",
         "IsRequired": true
       }
     ],

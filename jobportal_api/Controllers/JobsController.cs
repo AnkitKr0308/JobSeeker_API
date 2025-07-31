@@ -166,6 +166,29 @@ namespace jobportal_api.Controllers
 
         }
 
+        [HttpGet("CheckAppliedJobs")]
+        public async Task<ActionResult> CheckAppliedJobs(string jobid)
+        {
+           
+            try
+            {
+                var userId = HttpContext.Session.GetString("userId");
+                if (userId == null)
+                {
+                    return Unauthorized(new { success = false, message = "User not authorized" });
+                }
+                var existingApplies = await _context.AppliedJobs
+                                 .Where(a => a.JobId ==jobid && a.UserId == userId)
+                                 .ToListAsync();
+                    return Ok(new { success = true, message = "You have already applied for this job" });
+                
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+        }
 
         [HttpGet("jobsapplied")]
         public async Task<ActionResult> GetAppliedJobs()

@@ -6,8 +6,8 @@ namespace jobportal_api.Models
     public class Users
     {
         [Key]
-        public int Id { get; set; }            
-
+        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string UserId { get; set; }    
 
         public string Name { get; set; }
