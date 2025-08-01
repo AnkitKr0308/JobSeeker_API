@@ -221,27 +221,75 @@ namespace jobportal_api.Controllers
         }
 
 
+
         [HttpGet("applications")]
-        public async Task<ActionResult> GetApplications()
+        public async Task<IActionResult> GetApplications()
         {
             try
             {
-                var result = await _context.Applications.FromSqlRaw("EXEC sp_getApplications").ToListAsync();
+                // Fetch application records from stored procedure
+                var applications = await _context.Applications
+                    .FromSqlRaw("EXEC sp_getApplications")
+                    .ToListAsync();
 
-                if (result == null || result.Count == 0)
+                if (applications == null || applications.Count == 0)
                 {
                     return NotFound(new { success = false, message = "No Applications Found" });
                 }
+
+                // Get all unique userIds from applications
+                var userIds = applications.Select(a => a.UserId).Distinct().ToList();
+
+                //  Fetch user profile data for all users in one go
+                var userProfiles = await _context.Users
+                    .Where(u => userIds.Contains(u.UserId))
+                    .Select(u => new UserProfileDTO
+                    {
+                        UserId = u.UserId,
+                        Name = u.Name,
+                        Email = u.Email,
+                        Gender = u.Gender,
+                        Contact = u.Contact,
+                        Role = u.Role,
+                        Bio = u.Bio,
+                        Skills = u.Skills,
+                        Projects = _context.Projects
+                            .Where(p => p.UserId == u.UserId)
+                            .Select(p => new ProjectDTO
+                            {
+                                ProjectID = p.ProjectID,
+                                Title = p.Title,
+                                Description = p.Description,
+                                Skills = p.Skills
+                            }).ToList(),
+                        WorkExperiences = _context.WorkEx
+                            .Where(w => w.UserId == u.UserId)
+                            .Select(w => new WorkExDTO
+                            {
+                                WorkExID = w.WorkExID,
+                                Company = w.Company,
+                                FromDate = w.FromDate,
+                                ToDate = w.ToDate
+                            }).ToList()
+                    })
+                    .ToListAsync();
+
+                // Merge application + profile data
+                var result = applications.Select(app => new
+                {
+                    Application = app,
+                    UserProfile = userProfiles.FirstOrDefault(p => p.UserId == app.UserId)
+                });
 
                 return Ok(new { success = true, result });
             }
             catch (Exception ex)
             {
-                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
-
         }
+
 
     }
 }
