@@ -1,9 +1,11 @@
 ﻿using jobportal_api.DTO;
 using jobportal_api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -19,13 +21,14 @@ namespace jobportal_api.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpPost("createjob")]
-
         public async Task<ActionResult> CreateJobs([FromBody] JobCreateDTO jobdto)
         {
             try
             {
-                var userId = HttpContext.Session.GetString("userId");
+                //var userId = HttpContext.Session.GetString("userId");
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 if (userId == null)
                 {

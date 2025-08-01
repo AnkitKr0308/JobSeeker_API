@@ -1,8 +1,10 @@
 ﻿using jobportal_api.DTO;
 using jobportal_api.Models;
-using Microsoft.AspNetCore.Http;
+using jobportal_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace jobportal_api.Controllers
 {
@@ -11,17 +13,20 @@ namespace jobportal_api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly JWTService _jwtService;
 
-        public UsersController(AppDbContext context)
+        public UsersController(AppDbContext context, JWTService jwtService)
         {
             _context = context;
+            _jwtService = jwtService;
         }
 
+        // Remove old session-based CheckSession, replace with token check if needed
+        [Authorize]
         [HttpGet("session")]
         public IActionResult CheckSession()
         {
-            var userId = HttpContext.Session.GetString("userId");
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -37,17 +42,16 @@ namespace jobportal_api.Controllers
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == login.Email.ToLower());
 
-            if (user == null)
-                return NotFound(new { message = "User not found" });
+            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
+                return Unauthorized(new { message = "Invalid email or password" });
 
-            var validPwd = BCrypt.Net.BCrypt.Verify(login.Password, user.Password);
-            if (!validPwd)
-                return Unauthorized(new { message = "Invalid password" });
+            var token = _jwtService.GenerateJwtToken(user);
 
-            HttpContext.Session.SetString("userId", user.UserId);
-            Console.WriteLine("User ID from session: " + user.UserId);
-
-            return Ok(new { user.UserId, user.Name, user.Role });
+            return Ok(new
+            {
+                token,
+                user = new { user.UserId, user.Name, user.Role }
+            });
         }
 
         [HttpPost("signup")]
@@ -84,8 +88,6 @@ namespace jobportal_api.Controllers
             return Ok(new { success = true, userId = userData.UserId, name = userData.Name, role = userData.Role });
         }
 
-      
-
         [HttpPut("updatepassword/{email}")]
         public async Task<IActionResult> UpdatePassword([FromBody] LoginDTO dto)
         {
@@ -102,36 +104,35 @@ namespace jobportal_api.Controllers
             return BadRequest(new { message = "Failed to update password" });
         }
 
+        // Logout can be handled fully on client by deleting token, but you can keep endpoint for other logic if needed
+        [Authorize]
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
+            // No session to clear, client should delete token
             return Ok();
         }
 
-
+        [Authorize]
         [HttpGet("userprofile/{userid}")]
         public async Task<IActionResult> GetUserProfile(string userid)
         {
-            var user = await _context.Users
-       .FirstOrDefaultAsync(u => u.UserId == userid);
+            // Optional: Check if user is accessing own profile or authorized to access this profile
+            var userIdFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdFromToken != userid)
+            {
+                // Return Forbidden or allow depending on your app's rules
+                // return Forbid();
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userid);
 
             if (user == null)
                 return NotFound(new { success = false, message = "User not found" });
 
-            // Get portfolio (single or null)
-            var portfolio = await _context.Portfolio
-                .FirstOrDefaultAsync(p => p.UserId == userid);
-
-            // Get projects list
-            var projects = await _context.Projects
-                .Where(p => p.UserId == userid)
-                .ToListAsync();
-
-            // Get work experiences list
-            var workExps = await _context.WorkEx
-                .Where(w => w.UserId == userid)
-                .ToListAsync();
+            var portfolio = await _context.Portfolio.FirstOrDefaultAsync(p => p.UserId == userid);
+            var projects = await _context.Projects.Where(p => p.UserId == userid).ToListAsync();
+            var workExps = await _context.WorkEx.Where(w => w.UserId == userid).ToListAsync();
 
             var dto = new UserProfileDTO
             {
@@ -141,9 +142,9 @@ namespace jobportal_api.Controllers
                 Gender = user.Gender,
                 Contact = user.Contact,
                 Role = user.Role,
-                Bio=user.Bio,
-                Skills=user.Skills,
-            
+                Bio = user.Bio,
+                Skills = user.Skills,
+
                 Projects = projects.Select(p => new ProjectDTO
                 {
                     ProjectID = p.ProjectID,
@@ -163,12 +164,12 @@ namespace jobportal_api.Controllers
             return Ok(new { success = true, profiledata = dto });
         }
 
+        [Authorize]
         [HttpGet("userprofile")]
         public async Task<IActionResult> GetAllUserProfiles()
         {
             try
             {
-
                 var users = await _context.Users
                     .Select(user => new UserProfileDTO
                     {
@@ -178,9 +179,8 @@ namespace jobportal_api.Controllers
                         Gender = user.Gender,
                         Contact = user.Contact,
                         Role = user.Role,
-                        Bio=user.Bio,
-                        Skills=user.Skills,
-
+                        Bio = user.Bio,
+                        Skills = user.Skills,
 
                         Projects = _context.Projects
                             .Where(p => p.UserId == user.UserId)
@@ -207,9 +207,7 @@ namespace jobportal_api.Controllers
                     .ToListAsync();
 
                 if (users == null || users.Count == 0)
-                {
                     return NotFound(new { success = false, message = "No users found" });
-                }
 
                 return Ok(new { success = true, data = users });
             }
@@ -220,10 +218,15 @@ namespace jobportal_api.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPost("userprofile")]
         public async Task<IActionResult> CreateUserProfile([FromBody] UserProfileDTO dto)
         {
+            var userIdFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdFromToken != dto.UserId)
+            {
+                return Unauthorized("You can only create your own profile");
+            }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == dto.UserId);
             if (user != null)
@@ -260,19 +263,18 @@ namespace jobportal_api.Controllers
             return Ok(new { success = true, message = "Profile created successfully" });
         }
 
-
+        [Authorize]
         [HttpPut("userprofile")]
         public async Task<IActionResult> UpdateUserProfile([FromBody] UserProfileDTO dto)
         {
-            try {
-                var userid = HttpContext.Session.GetString("userId");
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (userid == null)
-                {
+                if (userId == null)
                     return Unauthorized("Unauthorized user");
-                }
 
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userid);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
                 if (user != null)
                 {
                     user.Contact = dto.Contact;
@@ -283,21 +285,21 @@ namespace jobportal_api.Controllers
                     user.Skills = dto.Skills;
                 }
 
-                var oldProjects = _context.Projects.Where(p => p.UserId == userid);
+                var oldProjects = _context.Projects.Where(p => p.UserId == userId);
                 _context.Projects.RemoveRange(oldProjects);
                 _context.Projects.AddRange(dto.Projects.Select(p => new Projects
                 {
-                    UserId = userid,
+                    UserId = userId,
                     Title = p.Title,
                     Description = p.Description,
                     Skills = p.Skills
                 }));
 
-                var oldWorkEx = _context.WorkEx.Where(w => w.UserId == userid);
+                var oldWorkEx = _context.WorkEx.Where(w => w.UserId == userId);
                 _context.WorkEx.RemoveRange(oldWorkEx);
                 _context.WorkEx.AddRange(dto.WorkExperiences.Select(w => new WorkEx
                 {
-                    UserId = userid,
+                    UserId = userId,
                     Company = w.Company,
                     FromDate = w.FromDate,
                     ToDate = w.ToDate
@@ -306,9 +308,7 @@ namespace jobportal_api.Controllers
                 var result = await _context.SaveChangesAsync();
 
                 if (result == 0)
-                {
                     return BadRequest(new { success = false, message = "Unable to update profile" });
-                }
 
                 return Ok(new { success = true, message = "Profile updated successfully" });
             }
@@ -317,10 +317,6 @@ namespace jobportal_api.Controllers
                 var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
-           
         }
-
-
     }
-
 }

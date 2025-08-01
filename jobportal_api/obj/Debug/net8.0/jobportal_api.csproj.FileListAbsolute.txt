@@ -81,3 +81,4 @@ D:\Ankit\.Net\jobportal_api\jobportal_api\obj\Debug\net8.0\jobportal_api.pdb
 D:\Ankit\.Net\jobportal_api\jobportal_api\obj\Debug\net8.0\jobportal_api.genruntimeconfig.cache
 D:\Ankit\.Net\jobportal_api\jobportal_api\obj\Debug\net8.0\ref\jobportal_api.dll
 D:\Ankit\.Net\jobportal_api\jobportal_api\bin\Debug\net8.0\Microsoft.Extensions.Caching.SqlServer.dll
+D:\Ankit\.Net\jobportal_api\jobportal_api\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
