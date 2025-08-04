@@ -94,6 +94,27 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "UpdateApplicationStatus",
+    "RelativePath": "api/Jobs/updatestatus",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "applicationId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "jobportal_api.Controllers.RolesController",
     "Method": "GetRoles",
     "RelativePath": "api/Roles/roles",

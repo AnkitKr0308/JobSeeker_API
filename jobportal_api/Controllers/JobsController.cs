@@ -124,7 +124,8 @@ namespace jobportal_api.Controllers
         public async Task<ActionResult> ApplyJob([FromBody] AppliedJobs appliedjob)
         {
 
-            var userId = HttpContext.Session.GetString("userId");
+            //var userId = HttpContext.Session.GetString("userId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             try {
 
                 var existingApplies = await _context.AppliedJobs
@@ -149,6 +150,7 @@ namespace jobportal_api.Controllers
                     ReadyToRelocate = appliedjob.ReadyToRelocate,
                     CurrentLocation = appliedjob.CurrentLocation,
                     AppliedDate = DateOnly.FromDateTime(DateTime.Now),
+                    Status=appliedjob.Status
                 };
 
                  _context.AppliedJobs.Add(apply);
@@ -170,21 +172,26 @@ namespace jobportal_api.Controllers
         }
 
         [HttpGet("CheckAppliedJobs")]
-        public async Task<ActionResult> CheckAppliedJobs(string jobid)
+        public async Task<ActionResult> CheckAppliedJobs([FromQuery] string jobid)
         {
-           
             try
             {
-                var userId = HttpContext.Session.GetString("userId");
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 if (userId == null)
                 {
                     return Unauthorized(new { success = false, message = "User not authorized" });
                 }
+
                 var existingApplies = await _context.AppliedJobs
-                                 .Where(a => a.JobId ==jobid && a.UserId == userId)
-                                 .ToListAsync();
+                    .AnyAsync(a => a.JobId == jobid && a.UserId == userId);
+
+                if (existingApplies)
+                {
                     return Ok(new { success = true, message = "You have already applied for this job" });
-                
+                }
+
+                return Ok(new { success = false, message = "You can apply for this job" });
             }
             catch (Exception ex)
             {
@@ -193,12 +200,14 @@ namespace jobportal_api.Controllers
             }
         }
 
+
         [HttpGet("jobsapplied")]
         public async Task<ActionResult> GetAppliedJobs()
         {
             try
             {
-                var userId = HttpContext.Session.GetString("userId");
+                //var userId = HttpContext.Session.GetString("userId");
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 if (userId == null)
                 {
@@ -288,6 +297,32 @@ namespace jobportal_api.Controllers
             }
             catch (Exception ex)
             {
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+        }
+
+        [HttpPut("updatestatus")]
+        public async Task<ActionResult> UpdateApplicationStatus(int applicationId, string status)
+        {
+            try
+            {
+                
+                var application = await _context.AppliedJobs
+                .FirstOrDefaultAsync(a => a.ID == applicationId);
+
+                if (application == null)
+                {
+                    return NotFound(new { success = false, message = "Application not found" });
+                }
+                application.Status = status;
+                _context.AppliedJobs.Update(application);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, application });
+
+            }
+            catch (Exception ex) {
                 var errorMessage = ex.InnerException?.Message ?? ex.Message;
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
