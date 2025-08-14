@@ -16,6 +16,7 @@ namespace jobportal_api.Models
         public string? CurrentLocation { get; set; }
         public string? Status { get; set; }
         public DateOnly? AppliedDate { get; set; }
+        public DateTime? InterviewDate { get; set; }
 
     }
 }

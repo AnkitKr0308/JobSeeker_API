@@ -328,6 +328,32 @@ namespace jobportal_api.Controllers
             }
         }
 
+        [HttpPost("scheduleinterview")]
+        public async Task<ActionResult> ScheduleInterview([FromBody] InterviewScheduleDTO interviewSchedule)
+        {
+            try
+            {
+               
+                var application = await _context.AppliedJobs
+                    .FirstOrDefaultAsync(a => a.ID == interviewSchedule.ApplicationId && a.UserId == interviewSchedule.UserId);
+                if (application == null)
+                {
+                    return NotFound(new { success = false, message = "Application not found" });
+                }
+                application.Status = "Interview Scheduled";
+                application.InterviewDate = interviewSchedule.InterviewDate;
+                
+                _context.AppliedJobs.Update(application);
+                await _context.SaveChangesAsync();
+                // Here you can add logic to send email or notification about the interview schedule
+                return Ok(new { success = true, message = "Interview scheduled successfully", application });
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+        }
 
     }
 }

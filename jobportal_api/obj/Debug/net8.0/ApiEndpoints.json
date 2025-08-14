@@ -95,6 +95,22 @@
   },
   {
     "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "ScheduleInterview",
+    "RelativePath": "api/Jobs/scheduleinterview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "interviewSchedule",
+        "Type": "jobportal_api.DTO.InterviewScheduleDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
     "Method": "UpdateApplicationStatus",
     "RelativePath": "api/Jobs/updatestatus",
     "HttpMethod": "PUT",

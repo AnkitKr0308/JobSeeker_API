@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("jobportal_api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+10cb6bbdc0c88667c68c19ddec9d501a225f962e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c08628cae0869ae2a382f454096c21190407946")]
 [assembly: System.Reflection.AssemblyProductAttribute("jobportal_api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("jobportal_api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
