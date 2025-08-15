@@ -18,5 +18,6 @@ namespace jobportal_api.DTO
         public string? Status { get; set; }
         public string? UserId { get; set; }
         public string? CreatedBy { get; set; }
+        public DateTime? InterviewDate { get; set; }
     }
 }

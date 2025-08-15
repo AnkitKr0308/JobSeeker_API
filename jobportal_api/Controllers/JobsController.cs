@@ -202,7 +202,7 @@ namespace jobportal_api.Controllers
 
 
         [HttpGet("jobsapplied")]
-        public async Task<ActionResult> GetAppliedJobs()
+        public async Task<ActionResult> GetAppliedJobs([FromQuery] string? status)
         {
             try
             {
@@ -215,11 +215,12 @@ namespace jobportal_api.Controllers
                 }
 
                 var userParam = new SqlParameter("@userIdParam", userId);
-                var appliedjobs = await _context.AppliedJobsDTO.FromSqlRaw("EXEC sp_getAppliedJobs @userIdParam", userParam).ToListAsync();
+                var statusParam = new SqlParameter("@statusParam", status ?? (object)DBNull.Value);
+                var appliedjobs = await _context.AppliedJobsDTO.FromSqlRaw("EXEC sp_getAppliedJobs @userIdParam, @statusParam", userParam, statusParam).ToListAsync();
 
                 if (appliedjobs == null || appliedjobs.Count == 0)
                 {
-                    return NotFound(new { success = false, message = "You have not applied to any jobs yet" });
+                    return NotFound(new { success = false, message = "No jobs found" });
                 }
 
 
@@ -319,7 +320,19 @@ namespace jobportal_api.Controllers
                 _context.AppliedJobs.Update(application);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { success = true, application });
+                //Logic to send notification
+                var user = application.UserId;
+                var notification = new Notification
+                {
+                    UserId = user,
+                    Message = $"Your application status has been updated to {status}",
+                    CreatedAt = DateTime.Now
+                };
+
+                var notify = await _context.Notifications.AddAsync(notification);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, application, notification });
 
             }
             catch (Exception ex) {
@@ -345,8 +358,19 @@ namespace jobportal_api.Controllers
                 
                 _context.AppliedJobs.Update(application);
                 await _context.SaveChangesAsync();
-                // Here you can add logic to send email or notification about the interview schedule
-                return Ok(new { success = true, message = "Interview scheduled successfully", application });
+                // Logic to send notification
+                var user = application.UserId;
+                var notification = new Notification
+                {
+                    UserId = user,
+                    Message = $"Your Interview has been scheduled for {application.JobId}",
+                    CreatedAt = DateTime.Now
+                };
+
+                var notify = await _context.Notifications.AddAsync(notification);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Interview scheduled successfully", application, notification });
             }
             catch (Exception ex)
             {

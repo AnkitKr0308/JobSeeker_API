@@ -1,4 +1,5 @@
-﻿using jobportal_api.DTO;
+﻿using Azure.Core;
+using jobportal_api.DTO;
 using jobportal_api.Models;
 using jobportal_api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -315,6 +316,71 @@ namespace jobportal_api.Controllers
             catch (Exception ex)
             {
                 var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("notifications")]
+        public async Task<ActionResult> GetNotifications()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null)
+                {
+                    return Unauthorized(new { success = false, message = "User not authorized" });
+                }
+                var notifications = await _context.Notifications
+                    .Where(n => n.UserId == userId && !n.IsClear)
+                    .OrderByDescending(n => n.CreatedAt)
+                    .ToListAsync();
+             
+                return Ok(new { success = true, notifications });
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+        }
+
+        [Authorize]
+        [HttpPut("updatenotifications")]
+        public async Task<ActionResult> UpdateNotificationStatus([FromBody] NotificationUpdateRequest request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized(new { success = false, message = "User not authorized" });
+            }
+
+            if (request.NotificationIds == null || !request.NotificationIds.Any())
+                return BadRequest(new { success = false, message = "No notifications specified" });
+
+            var notifications = await _context.Notifications
+                .Where(n=>request.NotificationIds.Contains(n.Id)&&n.UserId==userId)
+                .ToListAsync();
+
+            if (!notifications.Any())
+                return NotFound(new { success = false, message = "No matching notifications found" });
+            try
+            {
+                foreach (var n in notifications)
+                {
+                    n.IsRead = request.IsRead ?? n.IsRead;
+                    n.IsClear = request.IsClear ?? n.IsClear;
+                }
+                var result = await _context.SaveChangesAsync();
+               
+                    return Ok(new { success = true, message = "Notification updated successfully" });
+               
+                
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
         }

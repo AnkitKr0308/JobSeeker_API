@@ -17,10 +17,10 @@ namespace jobportal_api
         public DbSet<AppliedJobs> AppliedJobs { get; set; }
         public DbSet<ApplicationsDTO> Applications { get; set; }
         public DbSet<AppliedJobsDTO> AppliedJobsDTO { get; set; }
-
         public DbSet<Portfolio> Portfolio { get; set; }      
         public DbSet<Projects> Projects { get; set; }         
         public DbSet<WorkEx> WorkEx { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
     }
     
