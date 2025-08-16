@@ -131,7 +131,7 @@ namespace jobportal_api.Controllers
             if (user == null)
                 return NotFound(new { success = false, message = "User not found" });
 
-            var portfolio = await _context.Portfolio.FirstOrDefaultAsync(p => p.UserId == userid);
+            //var portfolio = await _context.Portfolio.FirstOrDefaultAsync(p => p.UserId == userid);
             var projects = await _context.Projects.Where(p => p.UserId == userid).ToListAsync();
             var workExps = await _context.WorkEx.Where(w => w.UserId == userid).ToListAsync();
 

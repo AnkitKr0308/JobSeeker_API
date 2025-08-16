@@ -59,6 +59,22 @@
   },
   {
     "ContainingType": "jobportal_api.Controllers.JobsController",
+    "Method": "GetInterviewById",
+    "RelativePath": "api/Jobs/interviews/{appId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "appId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.JobsController",
     "Method": "FindJobsByJobId",
     "RelativePath": "api/Jobs/jobdetails/{jobid}",
     "HttpMethod": "GET",
@@ -125,13 +141,13 @@
     "Parameters": [
       {
         "Name": "applicationId",
-        "Type": "System.Int32",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
         "Name": "status",
         "Type": "System.String",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace jobportal_api.DTO
 {
@@ -19,5 +20,7 @@ namespace jobportal_api.DTO
         public string? UserId { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? InterviewDate { get; set; }
+        
+        public string? ApplicationId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace jobportal_api.Models
 {
@@ -17,6 +18,8 @@ namespace jobportal_api.Models
         public string? Status { get; set; }
         public DateOnly? AppliedDate { get; set; }
         public DateTime? InterviewDate { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string? ApplicationId { get; set; }
 
     }
 }

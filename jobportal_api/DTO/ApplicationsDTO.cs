@@ -7,6 +7,7 @@ namespace jobportal_api.DTO
     {
         [Key]
         public int? Id { get; set; }
+        public string? ApplicationId { get; set; }
         public DateOnly? AppliedDate { get; set; }
         public string? JobId { get; set; }
         public string? JobTitle { get; set; }

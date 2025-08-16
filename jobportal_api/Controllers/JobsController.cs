@@ -200,31 +200,83 @@ namespace jobportal_api.Controllers
             }
         }
 
-
+        [Authorize]
+        [Authorize]
         [HttpGet("jobsapplied")]
         public async Task<ActionResult> GetAppliedJobs([FromQuery] string? status)
         {
             try
             {
-                //var userId = HttpContext.Session.GetString("userId");
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var role = User.FindFirstValue(ClaimTypes.Role);
 
                 if (userId == null)
                 {
                     return Unauthorized(new { success = false, message = "Unauthorized user" });
                 }
 
-                var userParam = new SqlParameter("@userIdParam", userId);
+                SqlParameter userParam = (role == "Admin" || role == "Employer")
+                    ? new SqlParameter("@userIdParam", DBNull.Value) 
+                    : new SqlParameter("@userIdParam", userId);      
+
                 var statusParam = new SqlParameter("@statusParam", status ?? (object)DBNull.Value);
-                var appliedjobs = await _context.AppliedJobsDTO.FromSqlRaw("EXEC sp_getAppliedJobs @userIdParam, @statusParam", userParam, statusParam).ToListAsync();
+
+                List<AppliedJobsDTO> appliedjobs = await _context.AppliedJobsDTO
+                    .FromSqlRaw("EXEC sp_getAppliedJobs @userIdParam, @statusParam", userParam, statusParam)
+                    .ToListAsync();
 
                 if (appliedjobs == null || appliedjobs.Count == 0)
                 {
                     return NotFound(new { success = false, message = "No jobs found" });
                 }
 
-
                 return Ok(new { success = true, appliedjobs });
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
+            }
+        }
+
+
+        [Authorize]
+        [HttpGet("interviews/{appId}")]
+        public async Task<ActionResult> GetInterviewById([FromRoute] string appId)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var role = User.FindFirstValue(ClaimTypes.Role);
+
+                if (userId == null)
+                {
+                    return Unauthorized(new { success = false, message = "Unauthorized user" });
+                }
+
+                var interviewDetails = await _context.AppliedJobs
+                    .Where(a => a.ApplicationId == appId)
+                    .Select(a => new
+                    {
+                        a.ApplicationId,
+                        a.JobId,
+                        a.UserId,
+                        a.Status,
+                        a.InterviewDate
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (interviewDetails == null)
+                {
+                    return NotFound(new { success = false, message = "No Interviews" });
+                }
+
+                if (role == "Employee" && interviewDetails.UserId != userId)
+                {
+                    return Unauthorized(new { success = false, message = "You are not allowed to view this interview" });
+                }
+
+                return Ok(new { success = true, interviewDetails });
             }
             catch (Exception ex)
             {
@@ -240,7 +292,7 @@ namespace jobportal_api.Controllers
         {
             try
             {
-                // Fetch application records from stored procedure
+               
                 var applications = await _context.Applications
                     .FromSqlRaw("EXEC sp_getApplications")
                     .ToListAsync();
@@ -250,10 +302,8 @@ namespace jobportal_api.Controllers
                     return NotFound(new { success = false, message = "No Applications Found" });
                 }
 
-                // Get all unique userIds from applications
                 var userIds = applications.Select(a => a.UserId).Distinct().ToList();
 
-                //  Fetch user profile data for all users in one go
                 var userProfiles = await _context.Users
                     .Where(u => userIds.Contains(u.UserId))
                     .Select(u => new UserProfileDTO
@@ -303,14 +353,15 @@ namespace jobportal_api.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Employer")]
         [HttpPut("updatestatus")]
-        public async Task<ActionResult> UpdateApplicationStatus(int applicationId, string status)
+        public async Task<ActionResult> UpdateApplicationStatus(string applicationId, [FromBody] string status)
         {
             try
             {
-                
+                var role = User.FindFirstValue(ClaimTypes.Role);
                 var application = await _context.AppliedJobs
-                .FirstOrDefaultAsync(a => a.ID == applicationId);
+                .FirstOrDefaultAsync(a => a.ApplicationId == applicationId);
 
                 if (application == null)
                 {
@@ -325,14 +376,14 @@ namespace jobportal_api.Controllers
                 var notification = new Notification
                 {
                     UserId = user,
-                    Message = $"Your application status has been updated to {status}",
+                    Message = $"Status for application {applicationId} has been updated to {status}",
                     CreatedAt = DateTime.Now
                 };
 
                 var notify = await _context.Notifications.AddAsync(notification);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { success = true, application, notification });
+                return Ok(new { success = true, application });
 
             }
             catch (Exception ex) {
@@ -345,10 +396,9 @@ namespace jobportal_api.Controllers
         public async Task<ActionResult> ScheduleInterview([FromBody] InterviewScheduleDTO interviewSchedule)
         {
             try
-            {
-               
+            { 
                 var application = await _context.AppliedJobs
-                    .FirstOrDefaultAsync(a => a.ID == interviewSchedule.ApplicationId && a.UserId == interviewSchedule.UserId);
+                    .FirstOrDefaultAsync(a => a.ApplicationId == interviewSchedule.ApplicationId && a.UserId == interviewSchedule.UserId);
                 if (application == null)
                 {
                     return NotFound(new { success = false, message = "Application not found" });
@@ -363,7 +413,7 @@ namespace jobportal_api.Controllers
                 var notification = new Notification
                 {
                     UserId = user,
-                    Message = $"Your Interview has been scheduled for {application.JobId}",
+                    Message = $"Your Interview has been scheduled for {application.ApplicationId}",
                     CreatedAt = DateTime.Now
                 };
 
