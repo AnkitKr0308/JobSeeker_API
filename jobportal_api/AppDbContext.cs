@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using jobportal_api.Models;
 using jobportal_api.DTO;
+using jobportal_api.Hubs;
 
 
 namespace jobportal_api
@@ -21,6 +22,7 @@ namespace jobportal_api
         public DbSet<Projects> Projects { get; set; }         
         public DbSet<WorkEx> WorkEx { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        
 
     }
     

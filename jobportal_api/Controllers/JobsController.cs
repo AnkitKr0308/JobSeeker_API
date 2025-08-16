@@ -392,42 +392,63 @@ namespace jobportal_api.Controllers
             }
         }
 
+        [Authorize(Roles="Admin, Employer")]
         [HttpPost("scheduleinterview")]
         public async Task<ActionResult> ScheduleInterview([FromBody] InterviewScheduleDTO interviewSchedule)
         {
+            if (interviewSchedule == null)
+            {
+                return BadRequest(new { success = false, message = "Interview details are required" });
+            }
+            if (string.IsNullOrWhiteSpace(interviewSchedule.ApplicationId) || string.IsNullOrWhiteSpace(interviewSchedule.UserId))
+            {
+                return BadRequest(new { success = false, message = "Invalid ApplicationId or UserId" });
+            }
+
+
             try
-            { 
+            {
                 var application = await _context.AppliedJobs
                     .FirstOrDefaultAsync(a => a.ApplicationId == interviewSchedule.ApplicationId && a.UserId == interviewSchedule.UserId);
+
                 if (application == null)
                 {
                     return NotFound(new { success = false, message = "Application not found" });
                 }
+
                 application.Status = "Interview Scheduled";
                 application.InterviewDate = interviewSchedule.InterviewDate;
-                
+
                 _context.AppliedJobs.Update(application);
                 await _context.SaveChangesAsync();
-                // Logic to send notification
-                var user = application.UserId;
+
+                // Send notification
                 var notification = new Notification
                 {
-                    UserId = user,
-                    Message = $"Your Interview has been scheduled for {application.ApplicationId}",
+                    UserId = application.UserId,
+                    Message = $"Your interview has been scheduled for {application.InterviewDate:MMMM dd, yyyy HH:mm}",
                     CreatedAt = DateTime.Now
                 };
 
-                var notify = await _context.Notifications.AddAsync(notification);
+                await _context.Notifications.AddAsync(notification);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Interview scheduled successfully", application, notification });
+                return Ok(new
+                {
+                    success = true,
+                    message = "Interview scheduled successfully",
+                    application,
+                    notification
+                });
             }
             catch (Exception ex)
             {
+                
                 var errorMessage = ex.InnerException?.Message ?? ex.Message;
                 return StatusCode(500, new { success = false, message = "Internal server error", error = errorMessage });
             }
         }
+
 
     }
 }
