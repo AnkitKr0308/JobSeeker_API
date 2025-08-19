@@ -154,15 +154,15 @@
   },
   {
     "ContainingType": "jobportal_api.Controllers.NotificationController",
-    "Method": "UpdateNotificationStatus",
-    "RelativePath": "api/Notification",
-    "HttpMethod": "PUT",
+    "Method": "AddNotification",
+    "RelativePath": "api/Notification/add",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "request",
-        "Type": "jobportal_api.Models.NotificationUpdateRequest",
+        "Type": "jobportal_api.Models.Notification",
         "IsRequired": true
       }
     ],
@@ -176,6 +176,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "jobportal_api.Controllers.NotificationController",
+    "Method": "UpdateNotificationStatus",
+    "RelativePath": "api/Notification/updatenotifications",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "jobportal_api.Models.NotificationUpdateRequest",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

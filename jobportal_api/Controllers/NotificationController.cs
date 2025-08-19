@@ -34,7 +34,7 @@ namespace jobportal_api.Controllers
             return Ok(new { success = true, notifications });
         }
 
-        [HttpPut]
+        [HttpPut("updatenotifications")]
         public async Task<IActionResult> UpdateNotificationStatus([FromBody] NotificationUpdateRequest request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -54,6 +54,31 @@ namespace jobportal_api.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { success = true, message = "Notification updated successfully" });
+        }
+
+        //New endpoint to create + broadcast notification
+        [HttpPost("add")]
+        public async Task<IActionResult> AddNotification([FromBody] Notification request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var notification = new Notification
+            {
+                UserId = userId,
+                Message = request.Message,
+                CreatedAt = DateTime.UtcNow,
+                IsRead = false,
+                IsClear = false
+            };
+
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+
+            // Send realtime notification via SignalR
+            await _hubContext.Clients.Group(userId)
+                .SendAsync("ReceiveNotification", notification);
+
+            return Ok(new { success = true, notification });
         }
     }
 }
